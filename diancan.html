@@ -143,7 +143,7 @@ function simpleRuleQQText(qqText){
 }
 //数据是否为标题（格式为：name datetime），这里只是判断是否有包含日期，而且日期不在开头
 function isTitle(text){
-	var reDateTime = /\d{4}\/\d{1,2}\/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}/;
+	var reDateTime = /\d{4}\/\d{1,2}\/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2} |\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}/;
 	if(text.search(reDateTime)>0){
 		return true;
 	}else{
@@ -163,7 +163,8 @@ function isNeedDelete(text){
 }
 //是否是日期时间格式
 function isDateTime(text){
-	var reDateTime = /^\d{4,}\/(?:0?\d|1[12])\/(?:[012]?\d|3[01]) (?:[01]?\d|2[0-4]):(?:[0-5]?\d|60):(?:[0-5]?\d|60)$/;
+// 	var reDateTime = /^\d{4,}\/(?:0?\d|1[12])\/(?:[012]?\d|3[01]) (?:[01]?\d|2[0-4]):(?:[0-5]?\d|60):(?:[0-5]?\d|60)$/;
+	var reDateTime = /\d{4}\/\d{1,2}\/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2} |\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}/;
 	var isDateTime = reDateTime.test(text);
 	return isDateTime;
 }
