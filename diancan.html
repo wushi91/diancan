@@ -154,7 +154,7 @@ function isTitle(text){
 function isNeedDelete(text){
 	var bigLength = 30;
 	var littleLength = 0;
-	var contain = "http://|下单|吃饭|饭到了|撤回了一条消息|还有人要点吗|加入了本群";
+	var contain = "http://|下单|吃饭|饭到了|撤回了一条消息|还有人要点吗|加入了本群|还有没有要点的";
 	if(isDateTime(text)||isTime(text)||isTextBigThan(text,bigLength)||isTextLittleThan(text,littleLength)||isTextContainWith(text,contain)){
 		return true;
 	}else{
