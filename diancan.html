@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html>
-
-
-<head>
-<meta charset="utf-8"/>
+<!-- saved from url=(0045)https://wushi91.github.io/qhdata/diancan.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
 	<title>点餐统计</title>
 
 	<!-- CSS -->
@@ -52,9 +50,14 @@
 		width:auto;
 		padding: 5px;
 		margin-left: 10px;
-		margin-top: 4px;
 		float:left;
-		display: table-cell;
+	}
+	#div_setting{
+		height:auto;
+		width:auto;
+		padding: 5px;
+		margin-left: 50px;
+		float:left;
 	}
 	#div_button{
 		text-align:right;
@@ -95,6 +98,13 @@
 			}
 			document.getElementById("textarea1").value =foodOrderText;
 		}
+		//设置
+		function switchSetting(position){
+			if(position=="chaikaijiahao"){
+				return document.getElementById("chaikaijiahao").checked;
+			}
+			return false;
+		}
 	</script>
 
 <script type="text/javascript">
@@ -122,7 +132,8 @@ function simpleRuleQQText(qqText){
 			}
 		}else{
 			//对字符串中的加号和空格进行处理
-			regularTextArray[i] = regularTextArray[i].replace(/\+|＋/g,"\n");
+			if(switchSetting("chaikaijiahao"))
+				regularTextArray[i] = regularTextArray[i].replace(/\+|＋/g,"\n");
 			regularTextArray[i] = regularTextArray[i].replace(/ /g,"");
 			console.log(regularTextArray[i]);
 		}
@@ -242,23 +253,28 @@ function countFood(foodArray){
 </script>
 <link rel="shortcut icon" href="https://raw.githubusercontent.com/wushi91/qhdata/master/image_file/face_ico.png" type="image/x-icon">
 </head>
-<body id = "body">
+<body id="body">
 
-<div id ="div_contain">
+<div id="div_contain">
 	
-	<div id = "div_button">
+	<div id="div_button">
 		<button id="paiban" type="button" onclick="button1()">优化排版</button>
 		<button id="paiban" type="button" onclick="button2()">统计订单</button>
 	</div>
 
-	<div id = "div_title">
-		<p id= "textback" style="margin: 0">操作流程：输入数据→优化排版→统计订单</p>
+	<div id="div_title">
+		<span id="textback" style="margin: 0">操作流程：输入数据→优化排版→统计订单</span>
 	</div>
 
+	<div id="div_setting">
+		<span id="textback" style="margin: 0">设置：</span>
+		<span id="textback"><input type="checkbox" id="chaikaijiahao" checked="checked"/>拆开加号</span>
+	</div>
 </div>
 
-<br/>
-<textarea id = "textarea" ></textarea>
-<textarea id = "textarea1" disabled="disabled" >左边输入框输入，这里是统计结果，不能编辑。</textarea>
-</body>
-</html>
+<br>
+<textarea id="textarea"></textarea>
+<textarea id="textarea1" disabled="disabled">左边输入框输入，这里是统计结果，不能编辑。</textarea>
+
+
+</body></html>
