@@ -85,12 +85,14 @@
 			// body...
 			var regularText = document.getElementById("textarea").value;
 			var foodArray = getFoodArray(regularText);
+			var totalFoodCount = foodArray.length;
 			var foodOrderArray = countFood(foodArray);
 
 			var foodOrderText = "";
 			for(var i=0;i<foodOrderArray.length;i++){
 				var foodOrder =foodOrderArray[i];
 				if(i==0){
+					foodOrderText = foodOrderText +"                一共"+totalFoodCount+"份\n"
 					foodOrderText = foodOrderText +" ****************************************\n"
 				}
 				foodOrderText = foodOrderText+"("+(i+1)+") "+foodOrder.orderfood+" : "+foodOrder.orderCount+" 份"+"\n";
