@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>点餐统计</title>
+    <link rel="stylesheet" href="./static/css/element-ui-index.css">
+    <link rel="stylesheet" href="./static/css/normalize.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+
+</head>
+<body>
+
+
+<div id="app">
+
+    <div class="container">
+        <div class="header">
+            <div class="action">
+                <el-button size="small" type="primary" @click="clickYouhua">优化排版</el-button>
+                <el-button size="small" type="primary" @click="clickTongji">统计订单</el-button>
+                <span>操作流程：输入数据→优化排版→统计订单</span>
+            </div>
+
+
+            <div class="setting">
+                <span>设置：</span>
+                <el-checkbox v-model="checked">拆开加号</el-checkbox>
+            </div>
+        </div>
+
+        <div class="area">
+
+            <div class="input-area">
+                <el-input
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="t_input">
+                </el-input>
+            </div>
+
+            <div class="result-area">
+                <el-input
+                        type="textarea"
+                        :rows="2"
+                        disabled
+                        placeholder="左边输入框输入，这里是统计结果，不能编辑。"
+                        v-model="t_result">
+                </el-input>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="./static/js/vue.js"></script>
+<script src="./static/js/element-ui-index.js"></script>
+<script src="./static/js/index.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            regular:  "http://|下单|吃饭|饭到了|撤回了一条消息|还有人要点吗|加入了本群|还有没有要点的|已下|等下",
+            t_input: '',
+            t_result: '',
+            checked:true
+        },
+        created: function () {
+
+        },
+        methods: {
+
+            clickYouhua:function () {
+                var list = this.t_input.split('\n')
+                this.t_input = this.qudiao(list)
+            },
+
+            youhua: function () {
+
+
+            },
+
+            qudiao:function (list) {
+              //去掉关键字的
+                var reContain = new RegExp(this.regular);
+                for (var i = 0; i < list.length; i++) {
+                    var text = list[i]
+                    if(text.search(reContain)>=0){
+                        list[i] =''
+                    }
+                }
+                return list.join('\n')
+            },
+
+            clickTongji: function () {
+                var list = this.t_input.split('\n')
+                var result = this.tongji(list)
+                this.t_result = this.output(result)
+            },
+            tongji: function (list) {
+                var result = {}
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i] in result) {
+                        result[list[i]] = result[list[i]] + 1
+                    } else {
+                        result[list[i]] = 1
+                    }
+                }
+                return result
+            },
+            output: function (dict) {
+                var text = ''
+                for (x in dict) {
+                    text = text + x + ':' + dict[x] + '\n'
+                }
+                console.log(text)
+                return text
+            }
+
+        }
+
+    })
+
+</script>
+</body>
+</html>
+
