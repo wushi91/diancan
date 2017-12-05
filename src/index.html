@@ -18,7 +18,7 @@
             <div class="action">
                 <el-button size="small" type="primary" @click="clickYouhua">优化排版</el-button>
                 <el-button size="small" type="primary" @click="clickTongji">统计订单</el-button>
-                <span>操作流程：输入数据→优化排版→统计订单</span>
+                <span style="margin-left: 10px">操作流程：输入数据→优化排版→统计订单</span>
             </div>
 
 
@@ -41,7 +41,6 @@
             <div class="result-area">
                 <el-input
                         type="textarea"
-                        :rows="2"
                         disabled
                         placeholder="左边输入框输入，这里是统计结果，不能编辑。"
                         v-model="t_result">
@@ -90,6 +89,12 @@
                         list[i] =''
                     }
                 }
+
+                list.forEach(function (t) {
+                    if(t===''){
+
+                    }
+                })
                 return list.join('\n')
             },
 
@@ -101,6 +106,11 @@
             tongji: function (list) {
                 var result = {}
                 for (var i = 0; i < list.length; i++) {
+
+                    if(list[i]===''){
+                        continue
+                    }
+
                     if (list[i] in result) {
                         result[list[i]] = result[list[i]] + 1
                     } else {

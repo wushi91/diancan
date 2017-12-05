@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)https://wushi91.github.io/qhdata/diancan.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+	<title>点餐统计</title>
+
+	<!-- CSS -->
+
+	<style type="text/css">
+	h1 {color: black;}
+	h2 {color: blue;}
+	h3 {color: black;}
+	
+	#textarea,#textarea1{
+		height: 80vh;
+		min-height: 500px;
+		width: 480px;
+		padding: 5px;
+		margin: 5px 5px;
+		font-size: 15px;
+		opacity: 0.9;
+		font-family: "Arial","Verdana"; /*字体*/
+		
+	}
+	#textarea1{
+		color: #003366;
+		background-color: #DDDDDD;
+	}
+	#textback{
+		margin: 5px 0px 0px 0px;
+		font-size: 15px;
+	}
+
+	#paiban{
+		font-size: 15px;
+	}
+
+	#div_contain{
+		text-align:center;
+		margin:0 auto;
+		margin-top: 15px;
+		padding: 5px;
+		width: 990px;
+		height: 30px;
+		background-color: #FFFFFF;
+		opacity: 0.8;
+	}
+	#div_title{
+		height:auto;
+		width:auto;
+		padding: 5px;
+		margin-left: 10px;
+		float:left;
+	}
+	#div_setting{
+		height:auto;
+		width:auto;
+		padding: 5px;
+		margin-left: 50px;
+		float:left;
+	}
+	#div_button{
+		text-align:right;
+		float:left;
+		width: auto;
+		height: auto;
+		margin-top: 4px;
+	}
+
+	#body{
+		text-align:center;
+		background:#fff url(https://raw.githubusercontent.com/wushi91/qhdata/master/src/static/images/sea_duck.jpg) no-repeat left top;
+		background-size:100%;
+	}
+	</style>
+
+
+	<script type="text/javascript">
+		function button1() {
+			// body...
+			var qqText = document.getElementById("textarea").value;
+			document.getElementById("textarea").value =simpleRuleQQText(qqText);
+		}
+		function button2() {
+			// body...
+			var regularText = document.getElementById("textarea").value;
+			var foodArray = getFoodArray(regularText);
+			var totalFoodCount = foodArray.length;
+			var foodOrderArray = countFood(foodArray);
+
+			var foodOrderText = "";
+			for(var i=0;i<foodOrderArray.length;i++){
+				var foodOrder =foodOrderArray[i];
+				if(i==0){
+					foodOrderText = foodOrderText +"                一共"+totalFoodCount+"份\n"
+					foodOrderText = foodOrderText +" ****************************************\n"
+				}
+				foodOrderText = foodOrderText+"("+(i+1)+") "+foodOrder.orderfood+" : "+foodOrder.orderCount+" 份"+"\n";
+				foodOrderText = foodOrderText +" ****************************************\n"
+			}
+			document.getElementById("textarea1").value =foodOrderText;
+		}
+		//设置
+		function switchSetting(position){
+			if(position=="chaikaijiahao"){
+				return document.getElementById("chaikaijiahao").checked;
+			}
+			return false;
+		}
+	</script>
+
+<script type="text/javascript">
+/*排版和优化---------------------------------------------------------------------------*/
+function simpleRuleQQText(qqText){
+	var mutilLineText = qqText.split("\n");
+	var regularTextArray = new Array();
+	for(var i=0;i<mutilLineText .length;i++){
+		var singleLineText = mutilLineText[i];
+		// console.log(singleLineText);
+		if(isTitle(singleLineText)){
+			regularTextArray.push(singleLineText);
+		}else{
+			if(!isNeedDelete(singleLineText)){				
+				regularTextArray.push(singleLineText);
+			}
+		}
+	}
+
+	//将无内容的标题至为空
+	for(var i=0;i<regularTextArray.length;i++){
+		if(isTitle(regularTextArray[i])){
+			if(i == regularTextArray.length-1||isTitle(regularTextArray[i+1])){
+				regularTextArray[i] = "";
+			}
+		}else{
+			//对字符串中的加号和空格进行处理
+			if(switchSetting("chaikaijiahao"))
+				regularTextArray[i] = regularTextArray[i].replace(/\+|＋/g,"\n");
+			regularTextArray[i] = regularTextArray[i].replace(/ /g,"");
+			console.log(regularTextArray[i]);
+		}
+	}
+
+	//再次排版，清除空行，转换为段落
+	var regularText ="";
+	for(var i=0;i<regularTextArray.length;i++){
+		if(i!=0&&isTitle(regularTextArray[i])){
+			regularText = regularText+"\n";
+		}
+
+		if(regularTextArray[i]!=""){			
+			regularText = regularText+regularTextArray[i]+"\n"
+			
+		}
+	}
+	return regularText;
+}
+//数据是否为标题（格式为：name datetime），这里只是判断是否有包含日期，而且日期不在开头
+function isTitle(text){
+	var reDateTime = /\d{4}\/\d{1,2}\/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}|\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}/;
+	if(text.search(reDateTime)>0){
+		return true;
+	}else{
+		return false;
+	}
+}
+//数据是否需要删除
+function isNeedDelete(text){
+	var bigLength = 30;
+	var littleLength = 0;
+	var contain = "http://|下单|吃饭|饭到了|撤回了一条消息|还有人要点吗|加入了本群|还有没有要点的|已下|等下";
+	if(isDateTime(text)||isTime(text)||isTextBigThan(text,bigLength)||isTextLittleThan(text,littleLength)||isTextContainWith(text,contain)){
+		return true;
+	}else{
+		return false;
+	}
+}
+//是否是日期时间格式
+function isDateTime(text){
+// 	var reDateTime = /^\d{4,}\/(?:0?\d|1[12])\/(?:[012]?\d|3[01]) (?:[01]?\d|2[0-4]):(?:[0-5]?\d|60):(?:[0-5]?\d|60)$/;
+	var reDateTime = /\d{4}\/\d{1,2}\/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}|\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}/;
+	var isDateTime = reDateTime.test(text);
+	return isDateTime;
+}
+//是否是时间格式
+function isTime(text){
+	var reTime = /^(?:[01]?\d|2[0-4]):(?:[0-5]?\d|60):(?:[0-5]?\d|60)$/;
+	var isTime = reTime.test(text);
+	return isTime;
+}
+//文本长度是否超过指定的长度
+function isTextBigThan(text,length){
+	if(text.length>length){
+		return true;
+	}
+	return false;
+}
+//文本长度是否小于或等于指定的长度
+function isTextLittleThan(text,length){
+	if(text.length<=length){
+		return true;
+	}
+	return false;
+}
+//文本是否包含了指定的字符串
+function isTextContainWith(text,contain){
+	var reContain = new RegExp(contain);
+	if(text.search(reContain)>=0){
+		return true;
+	}else{
+		return false;
+	}
+}
+	</script>
+
+<script type="text/javascript">
+/*订单统计---------------------------------------------------------------------------*/
+function getFoodArray(regularText){
+	var mutilLineText = regularText.split("\n");
+	var foodArray = new Array();
+	for(var i = 0;i<mutilLineText .length;i++){
+		if(!isTitle(mutilLineText [i])&&mutilLineText [i]!=""){
+			foodArray.push(mutilLineText [i]);
+		}
+	}
+	return foodArray;
+}
+function countFood(foodArray){
+	var foodOrderArray = new Array();
+	for(var i = 0;i<foodArray.length;i++){
+		var food = foodArray[i];
+		var isInOrder = false;
+		for(var j=0;j<foodOrderArray.length;j++){
+			var order = foodOrderArray[j];
+			orderfood = order.orderfood;
+			if(food == orderfood){
+				isInOrder = true;
+				break;
+			}
+		}
+		if(!isInOrder) {
+			var foodCount = 0;
+			for(var j=0;j<foodArray.length;j++){
+				if(food == foodArray[j]){
+				foodCount++;
+				}
+			}
+			var order = {orderfood:food,orderCount:foodCount};
+			foodOrderArray.push(order);
+		}
+	}
+	return foodOrderArray;
+}
+
+</script>
+<link rel="shortcut icon" href="https://raw.githubusercontent.com/wushi91/qhdata/master/image_file/face_ico.png" type="image/x-icon">
+</head>
+<body id="body">
+
+<div id="div_contain">
+	
+	<div id="div_button">
+		<button id="paiban" type="button" onclick="button1()">优化排版</button>
+		<button id="paiban" type="button" onclick="button2()">统计订单</button>
+	</div>
+
+	<div id="div_title">
+		<span id="textback" style="margin: 0">操作流程：输入数据→优化排版→统计订单</span>
+	</div>
+
+	<div id="div_setting">
+		<span id="textback" style="margin: 0">设置：</span>
+		<span id="textback"><input type="checkbox" id="chaikaijiahao" checked="checked"/>拆开加号</span>
+	</div>
+</div>
+
+<br>
+<textarea id="textarea"></textarea>
+<textarea id="textarea1" disabled="disabled">左边输入框输入，这里是统计结果，不能编辑。</textarea>
+
+
+</body></html>
