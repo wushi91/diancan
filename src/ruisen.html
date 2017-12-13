@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+
+        .wrapper{
+            color:blue;
+        }
+
+        span{
+             display: inline-block;
+            padding:5px 15px;
+             border-radius: 5px;
+         }
+
+
+
+        .item>span:first-child,.result>span:first-child {
+
+            color: gray;
+            width: 100px;
+            text-align: right;
+
+        }
+
+        .item>span:first-child~span{
+            cursor: pointer;
+        }
+        .item>span:first-child~span:active{
+
+            color: white;
+            background-color: orange;
+        }
+
+        .result>span:first-child~span{
+            cursor:default;
+            color: white;
+            background-color: orange;
+        }
+
+        .button{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+
+
+<div class="wrapper">
+    <div class="item">
+        <span>上装：</span>
+        <span>T恤</span>
+        <span>外套</span>
+        <span>风衣</span>
+        <span>湖南</span>
+    </div>
+
+    <div class="item">
+        <span>下装：</span>
+        <span>1T恤</span>
+        <span>2外套</span>
+        <span>3风衣</span>
+        <span>4湖南</span>
+    </div>
+
+    <div class="result">
+        <span>已经选中：</span>
+
+    </div>
+</div>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+
+    (function(){
+
+        console.log('111sbsbs')
+        Array.prototype.contains = function ( needle ) {
+            for (i in this) {
+                if (this[i] == needle) return true;
+            }
+            return false;
+        }
+
+        Array.prototype.removeByValue = function(val) {
+            for(var i=0; i<this.length; i++) {
+                if(this[i] == val) {
+                    this.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+
+        var choosed = []
+        $('.item>span:first-child~span').click(function () {
+
+            var clicked = $(this).text()
+
+            if(choosed.contains(clicked)){
+
+            }else{
+                choosed.push(clicked)
+                $('.result').append(' <span>'+clicked+'<span class="button" value="'+clicked+'">X</span></span>')
+            }
+        })
+
+
+        $(document).on("click",'.button',function(){
+
+            console.log(choosed)
+            var value = $(this).attr('value')
+            choosed.removeByValue(value)
+
+            $('.result').html('<span>已经选中：</span>')
+
+            for(var i=0;i<choosed.length;i++){
+                var clicked = choosed[i]
+                $('.result').append(' <span>'+clicked+'<span class="button" value="'+clicked+'">X</span></span>')
+            }
+
+        });
+
+
+    })()
+
+
+
+</script>
+</body>
+</html>
